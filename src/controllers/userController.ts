@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { UserCreateInput } from "../generated/prisma/models/User.ts";
 import userService from "../services/userService.ts";
+import bcrypt from "bcrypt";
+import passwordUtil from "../utils/password/passwordUtil.ts";
 
 const createUser = async (req: Request, res: Response) => {
     try {
@@ -12,9 +14,11 @@ const createUser = async (req: Request, res: Response) => {
         // JSON -> 객체로 바꿀 때 가능한건, string, boolean, number, null만 가능함
         // 날짜는 JSON.parse() 해도 string임
 
+
+        // bcrypt.hash(암호화할string, 암호화단계숫자) : 비동기함수, 단방향 암호화 에서도
         const userData: UserCreateInput = {
             username,
-            password,
+            password: await passwordUtil.hashPassword(password),
             name,
             nickname,
             email,
