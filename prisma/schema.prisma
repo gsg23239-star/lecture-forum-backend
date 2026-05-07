@@ -47,3 +47,5 @@ model User {
   gender      GenderType
   role        RoleType   @default(USER) // 삽입할 때 기본값으로 USER 기록
 }
+
+
