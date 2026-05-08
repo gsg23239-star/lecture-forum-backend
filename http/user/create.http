@@ -6,10 +6,10 @@ POST {{baseUrl}}/user/create
 Content-Type: application/json
 
 {
-  "username": "abc",
+  "username": "abc12",
   "password": "abc123",
-  "name": "젯",
-  "nickname": "브레인",
-  "email": "abc@abc.com",
+  "name": "젯모모",
+  "nickname": "김도기",
+  "email": "abc@aBCB.com",
   "gender": "MALE"
 }
