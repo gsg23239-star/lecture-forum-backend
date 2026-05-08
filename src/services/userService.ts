@@ -1,6 +1,8 @@
 import { UserCreateInput } from "../generated/prisma/models/User.ts";
 import prisma from "../config/prisma.ts";
 import { Prisma } from "../generated/prisma/client.ts";
+import { LoginInputType } from "../schemas/user/login.ts";
+import passwordUtil from "../utils/password/passwordUtil.ts";
 
 const createUser = async (data: UserCreateInput) => {
     try {
@@ -12,7 +14,7 @@ const createUser = async (data: UserCreateInput) => {
             // Prisma error 객체 내부에 code 항목 값이 "P2002"인 것이
             // 중복값이 있을 때의 에러코드임
             if (error.code === "P2002") {
-               const errorMessage = error.message;
+                const errorMessage = error.message;
 
                 // 예시. target = ["username", "nickname", "email"]
                 // array의 요소 중 "이 값"이 있는지 확인하는 메서드는 .includes()
@@ -35,10 +37,40 @@ const createUser = async (data: UserCreateInput) => {
             }
         }
 
-        throw new Error("UNKNOWN_ERROR");     // return과 같은데 값을 리턴하는게 아니라 에러를 리턴하는 키워드
+        throw new Error("UNKNOWN_ERROR"); // return과 같은데 값을 리턴하는게 아니라 에러를 리턴하는 키워드
+    }
+};
+
+const login = async (data: LoginInputType) => {
+    try {
+        // prisma.테이블.findUnique(조건객체) : SELECT 명령 (단, Unique 칼럼을 통해)
+        // findUnique라는 메서드는 객체 1개만 리턴
+        // find라는 메서드는 Array가 리턴
+        const user = await prisma.user.findUnique({
+            where: {
+                username: data.username,
+            },
+        });
+
+        // 검색을 했는데 해당하는 내용이 없는건, 에러가 아님.
+        // DB에서 조회한 내용인 user가 없거나, deletedAt의 값이 있으면
+        if (!user || user.deletedAt) {
+            throw new Error("INVALID_CREDENTIALS")
+        }
+
+        const isValid = await passwordUtil.verifyPassword(data.password, user.password);
+        if (!isValid) {
+            throw new Error("INVALID_CREDENTIALS");
+        }
+
+        // 아이디와 비밀번호가 일치하는 정보가 있다는 뜻
+
+    } catch (error) {
+
     }
 };
 
 export default {
     createUser,
+    login,
 };
