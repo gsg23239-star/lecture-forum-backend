@@ -3,6 +3,7 @@ import prisma from "../config/prisma.ts";
 import { Prisma } from "../generated/prisma/client.ts";
 import { LoginInputType } from "../schemas/user/login.ts";
 import passwordUtil from "../utils/password/passwordUtil.ts";
+import jwtUtil from "../utils/jwt/jwtUtil.ts";
 
 const createUser = async (data: UserCreateInput) => {
     try {
@@ -55,7 +56,7 @@ const login = async (data: LoginInputType) => {
         // 검색을 했는데 해당하는 내용이 없는건, 에러가 아님.
         // DB에서 조회한 내용인 user가 없거나, deletedAt의 값이 있으면
         if (!user || user.deletedAt) {
-            throw new Error("INVALID_CREDENTIALS")
+            throw new Error("INVALID_CREDENTIALS");
         }
 
         const isValid = await passwordUtil.verifyPassword(data.password, user.password);
@@ -64,10 +65,16 @@ const login = async (data: LoginInputType) => {
         }
 
         // 아이디와 비밀번호가 일치하는 정보가 있다는 뜻
+        const token = jwtUtil.generateToken(user.id);
 
-    } catch (error) {
+        // password와 deletedAt라는 항목은 response(응답)에 포함시킬 필요 없어서, 그걸 제외한 나머지만 safeUserInfo에 저장
+        const { password, deletedAt, ...safeUserInfo } = user;
 
-    }
+        return {
+            user: safeUserInfo,
+            token,
+        };
+    } catch (error) {}
 };
 
 export default {
