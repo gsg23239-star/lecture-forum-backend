@@ -38,6 +38,28 @@ const createUser = async (req: Request, res: Response) => {
         // 응답에 들어갈 string 데이터로 newUser를 json 가공하여 넣는다
         res.status(201).json(newUser);
     } catch (error) {
+        // 모든 에러에 대해서 처리를 해줄 순 없음.
+        // 내가 처리해줄 수 있는 대표적 에러에 대해서만 대처함
+        // 매개변수인 error 는 unknown 타입임
+        // unknown 탕비은 any 타입처럼 모든값들이 저장될수 있는 타입이지만,
+        // 사욯하기위해서는 내로잉(타입 종합)을 통해 사용이 가능함
+        if (error instanceof Error) {
+            switch (error.message) {
+                case "ALREADY_EXISTS_USERNAME":
+                    res.status(409).json({ error: "이미 사용 중인 아이디입니다. " });
+                    return;
+                case "ALREADY_EXISTS_EMAIL":
+                    res.status(409).json({ error: "이미 가입된 이메일입니다. " });
+                    return;
+                case "ALREADY_EXISTS_NICKNAME":
+                    res.status(409).json({ error: "이미 사용 중인 닉네임입니다. " });
+                    return;
+                default:
+                    console.log(error);
+                    res.status(500).json({ error: "유저 생성 중 오류가 발생했습니다. " });
+            }
+        }
+
         console.log(error);
         res.status(500).json({ message: "유저 생성 중 오류가 발생했습니다." });
     }
