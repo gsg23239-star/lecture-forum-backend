@@ -1,5 +1,8 @@
 import prisma from "../../config/prisma.ts";
-import { CategoryCreateInput, CategoryUpdateInput } from "../../generated/prisma/models/Category.ts";
+import {
+    CategoryCreateInput,
+    CategoryUpdateInput,
+} from "../../generated/prisma/models/Category.ts";
 import { CategoryStatus, Prisma } from "../../generated/prisma/client.ts";
 
 const getCategoryList = async () => {
@@ -10,6 +13,20 @@ const getCategoryList = async () => {
             id: "desc",
         },
     });
+};
+
+const getCategoryById = async (id: number) => {
+    const category = prisma.category.findUnique({
+        where: {
+            id,
+        },
+    });
+
+    if (!category) {
+        throw new Error("CATEGORY_NOT_FOUND");
+    }
+
+    return category;
 };
 
 const createCategory = async (input: CategoryCreateInput) => {
@@ -62,7 +79,7 @@ const updateCategory = async (id: number, input: CategoryUpdateInput) => {
                 id,
             },
             data: input,
-        })
+        });
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             // Prisma의 에러 코드 P2002는 중복값이 있을 때 나오는 에러 코드
@@ -80,6 +97,7 @@ const updateCategory = async (id: number, input: CategoryUpdateInput) => {
 
 export default {
     getCategoryList,
+    getCategoryById,
     createCategory,
     toggleCategoryStatus,
     updateCategory,
