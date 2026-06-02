@@ -70,4 +70,5 @@ const createReply = async (userId: number, postId: number, content: string) => {
 
 export default {
     createReply,
+    getRepliesByPostId,
 };

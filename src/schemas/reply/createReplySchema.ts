@@ -6,4 +6,4 @@ export const createReplySchema = z.object({
     content: z.string().min(1, "댓글 내용은 필수입니다.")
 });
 
-export type CreateReplyInputTypes = z.infer<typeof createReplySchema>;
+export type CreateReplyInputType = z.infer<typeof createReplySchema>;

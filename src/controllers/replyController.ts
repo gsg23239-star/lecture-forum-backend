@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { AuthRequest } from "../middlewares/auth.ts";
-import { CreateReplyInputType, createReplySchema } from "../schemas/reply/createReplySchema.ts";
+import { CreateReplyInputType } from "../schemas/reply/createReplySchema.ts";
 import replyService from "../services/replyService.ts";
 
-const getRepliesByPostId = async (req: Request, res: Response) => {
+const getRepliesByPostId = async (req: Request<{ postId: string}>, res: Response) => {
     // service에 전달되어야하는 값이 postId, page, size
     try {
         const postId = Number(req.params.postId);
@@ -67,6 +67,6 @@ const createReply = async (req: AuthRequest, res: Response) => {
 };
 
 export default {
-    getReplesByPostId,
+    getRepliesByPostId,
     createReply,
 };
