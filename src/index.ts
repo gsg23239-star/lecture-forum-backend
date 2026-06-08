@@ -3,7 +3,6 @@ import express from "express";
 import userRouter from "./routes/userRouter.ts";
 import cors from "cors";
 import adminRouter from "./routes/admin/adminRouter.ts";
-import { authenticate, requiredAdmin } from "./middlewares/auth.ts";
 import postRouter from "./routes/postRouter.ts";
 import categoryRouter from "./routes/categoryRouter.ts";
 import replyRouter from "./routes/replyRouter.ts";

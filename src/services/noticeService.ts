@@ -32,8 +32,6 @@ const getNoticeList = async (page: number, size: number) => {
     };
 };
 
-const getNotice = async (req: Request, res: Response) => {}
-
 const createNotice = async (title: string, content: string) => {
     return prisma.notice.create({
         data: {
