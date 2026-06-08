@@ -7,6 +7,7 @@ import { authenticate, requiredAdmin } from "./middlewares/auth.ts";
 import postRouter from "./routes/postRouter.ts";
 import categoryRouter from "./routes/categoryRouter.ts";
 import replyRouter from "./routes/replyRouter.ts";
+import noticeRouter from "./routes/noticeRouter.ts";
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use("/user", userRouter);
 app.use("/category", categoryRouter);
 app.use("/post", postRouter);
 app.use("/reply", replyRouter);
+app.use("/notice", noticeRouter);
 app.use("/admin", adminRouter);
 
 app.listen(PORT, () => {
